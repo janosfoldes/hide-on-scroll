@@ -4,10 +4,10 @@
 // Constants
 // ---------
 
-const defaultSelector = '.hide-on-scroll';
 const defaultOptions  = {
     delay: 2000,
-    position: 0
+    position: 0,
+    selector: '.hide-on-scroll'
 };
 
 const attrDelay       = 'data-hide-delay';
@@ -69,16 +69,13 @@ export default class HideOnScroll {
 
     get items() { return this._items; }
     get options() { return this._options; }
-    get selector() { return this._selector; }
 
-    constructor (selector = defaultSelector, options = {}) {
-        // Selector
-        this._selector = selector;
+    constructor (options = {}) {
         // Options
         this._options = assign({}, defaultOptions, options);
         // Items
         this._items = [];
-        let nodeList = document.querySelectorAll(selector);
+        let nodeList = document.querySelectorAll(this._options.selector);
         for (let i = 0; i < nodeList.length; i++) {
             this._items.push(new HideOnScrollItem(this, nodeList[i]));
         }
