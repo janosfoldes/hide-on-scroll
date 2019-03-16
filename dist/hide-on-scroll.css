@@ -1,0 +1,11 @@
+.hide-on-scroll {
+  position: fixed;
+  top: 0;
+  transform: translateY(0); }
+  .hide-on-scroll:not(.no-anim) {
+    transition: transform 0.4s ease; }
+
+.is-hidden-on-scroll:not(.is-locked) {
+  transform: translateY(-105%); }
+
+/*# sourceMappingURL=../maps/hide-on-scroll.css.map */

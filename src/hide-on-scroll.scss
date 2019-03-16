@@ -1,0 +1,28 @@
+// HIDE ON SCROLL
+// ==============
+
+// Settings
+// --------
+
+$hideonscroll-transition-duration: .4s !default;
+$hideonscroll-transition-timing: ease !default;
+$hideonscroll-translate: 105% !default;
+
+// Hide on Scroll
+// --------------
+
+.hide-on-scroll {
+    position: fixed;
+    top: 0;
+    transform: translateY(0);
+    &:not(.no-anim) {
+        transition: transform $hideonscroll-transition-duration $hideonscroll-transition-timing;
+    }
+}
+
+// Hidden
+// ------
+
+.is-hidden-on-scroll:not(.is-locked) {
+    transform: translateY(-($hideonscroll-translate));
+}

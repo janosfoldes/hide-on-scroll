@@ -1,0 +1,37 @@
+body {
+    background: #fdfdfd url('/images/swirl-pattern.png');
+    margin: 0;
+}
+header {
+    background: #0a0a0a;
+    box-shadow: 0 0 2px 0 #000000b3;
+    box-sizing: border-box;
+    color: #fdfdfd;
+    padding: 1rem 2rem;
+    width: 100%;
+    z-index: 1;
+}
+.bottom {
+    bottom: 2rem;
+    position: absolute;
+}
+.content {
+    position: relative;
+    min-height: 30rem;
+    padding: 6rem 2rem 2rem 2rem;
+}
+.instruction {
+    animation-direction: alternate;
+    animation-duration: .6s;
+    animation-iteration-count: infinite;
+    animation-name: blinker;
+    animation-timing-function: ease-in-out;
+    font-size: 1.25rem;
+    font-weight: 400;
+    text-decoration: blink;
+}
+
+@keyframes blinker {
+    from { opacity: 1.0; }
+    to { opacity: 0.0; }
+}

@@ -1,0 +1,2 @@
+.hide-on-scroll{position:fixed;top:0;-webkit-transform:translateY(0);-ms-transform:translateY(0);transform:translateY(0)}.hide-on-scroll:not(.no-anim){-webkit-transition:-webkit-transform .4s ease;transition:-webkit-transform .4s ease;transition:transform .4s ease;transition:transform .4s ease, -webkit-transform .4s ease}.is-hidden-on-scroll:not(.is-locked){-webkit-transform:translateY(-105%);-ms-transform:translateY(-105%);transform:translateY(-105%)}
+/*# sourceMappingURL=../maps/hide-on-scroll.min.css.map */
