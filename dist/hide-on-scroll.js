@@ -16,10 +16,10 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 // ==============
 // Constants
 // ---------
-var defaultSelector = '.hide-on-scroll';
 var defaultOptions = {
   delay: 2000,
-  position: 0
+  position: 0,
+  selector: '.hide-on-scroll'
 };
 var attrDelay = 'data-hide-delay';
 var attrPosition = 'data-hide-position';
@@ -88,11 +88,6 @@ function () {
     get: function get() {
       return this._options;
     }
-  }, {
-    key: "selector",
-    get: function get() {
-      return this._selector;
-    }
   }], [{
     key: "instanceCount",
     get: function get() {
@@ -113,18 +108,15 @@ function () {
   function HideOnScroll() {
     var _this = this;
 
-    var selector = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : defaultSelector;
-    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+    var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
     _classCallCheck(this, HideOnScroll);
 
-    // Selector
-    this._selector = selector; // Options
-
+    // Options
     this._options = assign({}, defaultOptions, options); // Items
 
     this._items = [];
-    var nodeList = document.querySelectorAll(selector);
+    var nodeList = document.querySelectorAll(this._options.selector);
 
     for (var i = 0; i < nodeList.length; i++) {
       this._items.push(new HideOnScrollItem(this, nodeList[i]));
@@ -183,6 +175,8 @@ function () {
   }]);
 
   function HideOnScrollItem(parent, element) {
+    var _this2 = this;
+
     _classCallCheck(this, HideOnScrollItem);
 
     this._parent = parent;
@@ -192,6 +186,20 @@ function () {
     this._setOptionInt('delay', attrDelay);
 
     this._setOptionInt('position', attrPosition);
+
+    this._mouseOver = false;
+
+    if (!("ontouchstart" in document.documentElement)) {
+      document.addEventListener('mousemove', function (e) {
+        _this2.onMouseMove(e);
+      });
+      element.addEventListener('mouseenter', function () {
+        _this2._mouseOver = true;
+      });
+      element.addEventListener('mouseleave', function () {
+        _this2._mouseOver = false;
+      });
+    }
   }
 
   _createClass(HideOnScrollItem, [{
@@ -219,21 +227,45 @@ function () {
       this._element.classList.add(classHidden);
     }
   }, {
+    key: "onMouseMove",
+    value: function onMouseMove(e) {
+      var _this3 = this;
+
+      var y = this._element.getBoundingClientRect().height;
+
+      var show = e.clientY <= y;
+
+      if (this._showOnMouse != show) {
+        // state changed
+        this._showOnMouse = show;
+
+        if (show) {
+          this.clearTimeout();
+
+          this._element.classList.remove(classHidden);
+        } else if (this._timeoutId == undefined) {
+          this._timeoutId = setTimeout(function () {
+            _this3.hide();
+          }, this._options.delay);
+        }
+      }
+    }
+  }, {
     key: "refresh",
     value: function refresh() {
-      var _this2 = this;
+      var _this4 = this;
 
       this.clearTimeout();
 
       this._element.classList.remove(classNoAnim);
 
-      var show = _isScrollingUpwards || _scrollPosition <= this._options.position || this._element.classList.contains(classLocked);
+      var show = _isScrollingUpwards || _scrollPosition <= this._options.position || this._element.classList.contains(classLocked) || this._mouseOver;
 
       if (show) {
         this._element.classList.remove(classHidden);
 
-        this._timeoutId = setTimeout(function () {
-          _this2.hide();
+        if (!this._mouseOver) this._timeoutId = setTimeout(function () {
+          _this4.hide();
         }, this._options.delay);
       } else if (this._timeoutId == undefined) {
         this._element.classList.add(classHidden);

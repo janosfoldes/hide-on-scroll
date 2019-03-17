@@ -114,6 +114,12 @@ class HideOnScrollItem {
         this._options = assign({}, parent._options);
         this._setOptionInt('delay', attrDelay);
         this._setOptionInt('position', attrPosition);
+        this._mouseOver = false;
+        if (!("ontouchstart" in document.documentElement)) {
+            document.addEventListener('mousemove', (e) => { this.onMouseMove(e) });
+            element.addEventListener('mouseenter', () => { this._mouseOver = true });
+            element.addEventListener('mouseleave', () => { this._mouseOver = false });
+        }
     }
 
     clearTimeout() {
@@ -127,13 +133,27 @@ class HideOnScrollItem {
         this._element.classList.add(classHidden);
     }
 
+    onMouseMove(e) {
+        let y = this._element.getBoundingClientRect().height
+        let show = (e.clientY <= y);
+        if ((this._showOnMouse != show)) { // state changed
+            this._showOnMouse = show;
+            if (show) {
+                this.clearTimeout();
+                this._element.classList.remove(classHidden);
+            } else if (this._timeoutId == undefined) {
+                this._timeoutId = setTimeout(() => { this.hide() }, this._options.delay);
+            }
+        }
+    }
+
     refresh() {
         this.clearTimeout();
         this._element.classList.remove(classNoAnim);
-        let show = (_isScrollingUpwards || _scrollPosition <= this._options.position || this._element.classList.contains(classLocked));
+        let show = (_isScrollingUpwards || _scrollPosition <= this._options.position || this._element.classList.contains(classLocked) || this._mouseOver);
         if (show) {
             this._element.classList.remove(classHidden);
-            this._timeoutId = setTimeout(() => { this.hide() }, this._options.delay);
+            if (!this._mouseOver) this._timeoutId = setTimeout(() => { this.hide() }, this._options.delay);
         } else if (this._timeoutId == undefined) {
             this._element.classList.add(classHidden);
         }
